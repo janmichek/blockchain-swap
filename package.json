@@ -1,0 +1,13 @@
+{
+  "name": "drizzle-template",
+  "version": "0.1",
+  "description": "",
+  "author": {
+    "name": "Jan Michek",
+    "email": "jan@janmichek.cz"
+  },
+  "scripts": {
+    "serve": "cd frontend && vue-cli-service serve",
+    "deploy": "truffle compile --reset && truffle migrate --reset"
+  }
+}
