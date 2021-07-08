@@ -2,6 +2,10 @@
 Predefined project with Truffle & Drizzle
 Good starting point for another projects.
 
+https://www.youtube.com/watch?v=99pYGpTWcXM 37:40
+
+[comment]: <> (todo prejmenovat na swap)
+
 ## Dependencies
 - Ganache https://www.trufflesuite.com/ganache
 

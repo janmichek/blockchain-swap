@@ -1,5 +1,5 @@
 {
-  "name": "drizzle-template",
+  "name": "vue-swap",
   "version": "0.1",
   "description": "",
   "author": {
@@ -9,5 +9,13 @@
   "scripts": {
     "serve": "cd frontend && vue-cli-service serve",
     "deploy": "truffle compile --reset && truffle migrate --reset"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
+    "chai-bignumber": "3.0.0",
+    "identicon": "^3.0.1"
   }
 }
