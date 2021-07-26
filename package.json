@@ -1,21 +1,18 @@
 {
-  "name": "vue-swap",
+  "name": "blockchain-swap",
   "version": "0.1",
-  "description": "",
-  "author": {
-    "name": "Jan Michek",
-    "email": "jan@janmichek.cz"
-  },
   "scripts": {
     "serve": "cd frontend && vue-cli-service serve",
     "deploy": "truffle compile --reset && truffle migrate --reset"
+  },
+  "author": {
+    "name": "Jan Michek",
+    "email": "jan@janmichek.cz"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "chai": "4.2.0",
-    "chai-as-promised": "7.1.1",
-    "chai-bignumber": "3.0.0",
-    "identicon": "^3.0.1"
+    "chai-as-promised": "7.1.1"
   }
 }

@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 
 import drizzleVuePlugin from '@drizzle/vue-plugin'
 import drizzleOptions from './drizzleOptions'
+import 'simpledotcss/simple.css'
 
 Vue.use(Vuex)
 

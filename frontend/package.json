@@ -1,21 +1,17 @@
 {
-  "name": "vue-swap",
-  "version": "0.1.0",
-  "description": "An Ethereum Marketplace",
-  "author": "gregory@dappuniversity.com",
+  "name": "blockchain-swap-frontend",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
   "dependencies": {
     "@drizzle/vue-plugin": "^0.1.0",
-    "babel-polyfill": "6.26.0",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-es2015": "6.24.1",
-    "babel-preset-stage-2": "6.24.1",
-    "babel-preset-stage-3": "6.24.1",
-    "babel-register": "6.26.0",
     "prettier": "^1.18.2",
-    "truffle": "5.0.5",
+    "simpledotcss": "^1.0.1",
     "vue": "^2.6.10",
-    "vuex": "^3.1.1",
-    "web3": "1.0.0-beta.55"
+    "web3": "^1.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",
@@ -26,10 +22,5 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "vue-template-compiler": "^2.6.10"
-  },
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
   }
 }
