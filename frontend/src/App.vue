@@ -1,12 +1,8 @@
 <template>
-  <div v-if="isDrizzleInitialized || loading" id="app">
+  <div v-if="!loading" id="app">
     <header>
       Account {{ account }}
-      <br>
-
     </header>
-    <div>Hello world</div>
-
     <div>
       <div>
         <label>Input</label>
@@ -37,7 +33,6 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
   import Web3 from "web3"
   import Token from './contracts/Token.json'
   import EthSwap from './contracts/EthSwap.json'
@@ -58,7 +53,6 @@
       }
     },
     computed: {
-      ...mapGetters('drizzle', ['isDrizzleInitialized']),
       ethBalanceFormatted () {
         return window.web3.utils.fromWei(this.ethBalance, 'Ether')
       },
@@ -115,7 +109,6 @@
         // send() from web3
         this.loading = true
         const converted = window.web3.utils.toWei(this.input, 'Ether')
-        console.log('XXX converted', converted)
         this.ethSwap.methods.buyTokens()
           .send({ value: converted, from: this.account })
           .on('transactionHash', () => (this.loading = false))
