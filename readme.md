@@ -15,21 +15,19 @@ https://www.youtube.com/watch?v=99pYGpTWcXM
 
 ```yarn install```
 
+### Deploy contracts to blockchain
+
+```yarn deploy```
+
 ### Install frontend dependencies
 
 ```cd frontend```
 
 ```yarn install```
 
-### Deploy contracts to blockchain
-
-```yarn deploy```
-
 ## Run project
 
 Run Ganache with Quickstart Workspace
-
-```cd frontend```
 
 ```yarn serve```
 
