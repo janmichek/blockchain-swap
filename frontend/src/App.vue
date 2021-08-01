@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!loading" id="app">
+  <div
+    v-if="!loading"
+    id="app">
     <header>
       <h1>Swap DAPP</h1>
       Account {{ account }}
@@ -66,7 +68,6 @@
   import Web3 from "web3"
   import Token from './contracts/Token.json'
   import EthSwap from './contracts/EthSwap.json'
-
 
   export default {
     name: 'app',

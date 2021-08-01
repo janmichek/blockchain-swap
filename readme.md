@@ -1,6 +1,8 @@
-### Blockchain Swap
+### Blockchain Swap DAPP
 
-This repository is inspired by tutorial:
+DAPP which let you exchange ETH for made up DAPP currency and vice versa.
+
+This repository is inspired by following tutorial:
 https://www.youtube.com/watch?v=99pYGpTWcXM
 
 ## Dependencies
@@ -17,6 +19,8 @@ https://www.youtube.com/watch?v=99pYGpTWcXM
 
 ### Deploy contracts to blockchain
 
+Run Ganache with Quickstart Workspace
+
 ```yarn deploy```
 
 ### Install frontend dependencies
@@ -26,8 +30,6 @@ https://www.youtube.com/watch?v=99pYGpTWcXM
 ```yarn install```
 
 ## Run project
-
-Run Ganache with Quickstart Workspace
 
 ```yarn serve```
 
