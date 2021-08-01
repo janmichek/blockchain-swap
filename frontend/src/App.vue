@@ -1,31 +1,61 @@
 <template>
   <div v-if="!loading" id="app">
     <header>
+      <h1>Swap DAPP</h1>
       Account {{ account }}
+      <br>
+      Balance: {{ web3.utils.fromWei(balance, 'ether') }}
     </header>
-    <div>
+    <section>
+      <h2>Buy Tokens</h2>
       <div>
         <label>Input</label>
         <br>
-        <strong>Eth Balance: {{ ethBalance }}</strong>
+        <strong>Eth Balance: {{ web3.utils.fromWei(ethBalance, 'ether') }} ETH</strong>
         <br>
-        <input type="text" @input="updateOutput">
+        <input type="text" @input="updateBuyOutput">
       </div>
 
       <div>
         <label>Output</label>
         <br>
-        <strong>Token Balance: {{ tokenBalance }}</strong>
+        <strong>Token Balance: {{ web3.utils.fromWei(tokenBalance, 'ether') }} DAPP</strong>
         <br>
-        <input type="text" disabled :value="output">
+        <input type="text" disabled :value="buyOutput">
       </div>
 
       <div>
-        1 ETH = 100 DApp
+        Exchange Rate: 1 ETH = 100 DApp
       </div>
 
-      <button @click="swap">Swap</button>
-    </div>
+      <button @click="swapBuyTokens">Swap to DAPP</button>
+    </section>
+
+    <section>
+      <h2>Sell Tokens</h2>
+
+      <div>
+        <label>Input</label>
+        <br>
+        <strong>Token Balance: {{ web3.utils.fromWei(tokenBalance, 'ether') }} DAPP</strong>
+        <br>
+        <input type="text" @input="updateSellOutput">
+      </div>
+
+      <div>
+        <label>Output</label>
+        <br>
+        <strong>Eth Balance: {{ web3.utils.fromWei(ethBalance, 'ether') }} ETH</strong>
+        <br>
+        <input type="text" disabled :value="sellOutput">
+      </div>
+
+      <div>
+        Exchange Rate: 100 DApp = 1 ETH
+      </div>
+      <button @click="swapSellTokens">Swap to ETH</button>
+
+    </section>
   </div>
   <div v-else>
     Loading
@@ -47,71 +77,93 @@
         ethSwap: null,
         tokenBalance: 0,
         ethBalance: 0,
-        output: 0,
-        input: 1,
+        buyOutput: 0,
+        buyInput: 0,
+        sellOutput: 0,
+        sellInput: 0,
+        web3: undefined,
         loading: true,
+        balance: 0,
       }
     },
-    computed: {
-      ethBalanceFormatted () {
-        return window.web3.utils.fromWei(this.ethBalance, 'Ether')
-      },
-    },
     async mounted () {
-      await this.loadWeb3()
       await this.loadBlockchainData()
     },
 
     methods: {
-      async loadWeb3 () {
-        if (window.ethereum) {
-          window.web3 = new Web3(window.ethereum)
-          await window.ethereum.enable()
-        } else if (window.web3) {
-          window.web3 = new Web3(window.web3.currentProvider)
-        } else {
-          window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-        }
-      },
       async loadBlockchainData () {
-        const web3 = window.web3
-        const accounts = await web3.eth.getAccounts()
-        this.account = accounts[0]
-        this.ethBalance = await web3.eth.getBalance(this.account)
+        if (typeof window.ethereum !== 'undefined') {
+          this.web3 = new Web3(window.ethereum)
+          const netId = await this.web3.eth.net.getId()
+          const accounts = await this.web3.eth.getAccounts()
+          this.account = accounts[0]
+          this.ethBalance = await this.web3.eth.getBalance(this.account)
 
-        const networkId = await web3.eth.net.getId()
-        const tokenData = Token.networks[networkId]
+          //load balance
+          if (typeof accounts[0] !== 'undefined') {
+            this.balance = await this.web3.eth.getBalance(accounts[0])
+          } else {
+            window.alert('Please login with MetaMask')
+          }
 
-        const ethSwapData = EthSwap.networks[networkId]
-        if (ethSwapData) {
-          this.ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address)
+          //load contracts
+          try {
+            this.ethSwap = new this.web3.eth.Contract(EthSwap.abi, EthSwap.networks[netId].address)
+            this.token = new this.web3.eth.Contract(Token.abi, Token.networks[netId].address)
+            // call() from web3
+
+            this.tokenBalance = await this.token.methods.balanceOf(this.account).call()
+            this.loading = false
+
+          } catch (e) {
+            /* eslint-disable no-console*/
+
+            console.log('Error', e)
+            window.alert('Contracts not deployed to the current network')
+          }
         } else {
-          window.alert('EthSwap contract not deployed to detected network')
+          window.alert('Please install MetaMask')
         }
-
-        if (tokenData) {
-          this.token = new web3.eth.Contract(Token.abi, tokenData.address)
-          // call() from web3
-
-          this.tokenBalance = await this.token.methods.balanceOf(this.account).call()
-        } else {
-          window.alert('Token contract not deployed to detected network')
-        }
-
-        this.loading = false
       },
 
-      updateOutput (e) {
-        this.input = e.target.value.toString()
-        this.output = (this.input * 100).toString()
+      updateBuyOutput (e) {
+        this.buyInput = e.target.value.toString()
+        this.buyOutput = (this.buyInput * 100).toString()
       },
-      swap () {
+      updateSellOutput (e) {
+        this.sellInput = e.target.value.toString()
+        this.sellOutput = (this.sellInput / 100).toString()
+      },
+      swapBuyTokens () {
         // send() from web3
         this.loading = true
-        const converted = window.web3.utils.toWei(this.input, 'Ether')
+
+        const converted = this.web3.utils.toWei(this.buyInput.toString(), 'ether')
         this.ethSwap.methods.buyTokens()
           .send({ value: converted, from: this.account })
-          .on('transactionHash', () => (this.loading = false))
+          .on('transactionHash', () => {
+            this.loading = false
+            window.location.reload(true)
+          })
+
+      },
+      swapSellTokens () {
+        this.loading = true
+        const converted = this.web3.utils.toWei(this.sellInput.toString(), 'ether')
+        const converted2 = this.web3.utils.fromWei(this.sellInput.toString(), 'ether')
+        console.log('CCCthis.ethSwap._address', this.ethSwap._address)
+        console.log('XXXconverted', converted)
+        console.log('XXXconverted2', converted2)
+        this.token.methods.approve(this.ethSwap._address, converted).send({ from: this.account })
+          .on('transactionHash', () => {
+              // this.ethSwap.methods.sellTokens(converted)
+              //   .send({ from: this.account })
+              //   .on('transactionHash', () => {
+              //   this.loading = false
+              //   window.location.reload(true)
+              // })
+            },
+          )
       },
     },
   }
