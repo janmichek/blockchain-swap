@@ -50,3 +50,7 @@ Paste private key
 Connect Account
 
 Open app on http://localhost:8080/
+
+### Test Smart Contracts
+
+```truffle test```

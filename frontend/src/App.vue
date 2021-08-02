@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!loading"
+    v-if="!isLoading"
     id="app">
     <header>
       <h1>Swap DAPP</h1>
@@ -35,7 +35,6 @@
 
     <section>
       <h2>Sell Tokens</h2>
-
       <div>
         <label>Input</label>
         <br>
@@ -56,11 +55,10 @@
         Exchange Rate: 100 DApp = 1 ETH
       </div>
       <button @click="swapSellTokens">Swap to ETH</button>
-
     </section>
   </div>
   <div v-else>
-    Loading
+    isLoading
   </div>
 </template>
 
@@ -83,7 +81,7 @@
         sellOutput: 0,
         sellInput: 0,
         web3: undefined,
-        loading: true,
+        isLoading: true,
         balance: 0,
       }
     },
@@ -114,7 +112,7 @@
             // call() from web3
 
             this.tokenBalance = await this.token.methods.balanceOf(this.account).call()
-            this.loading = false
+            this.isLoading = false
 
           } catch (e) {
             /* eslint-disable no-console*/
@@ -137,32 +135,28 @@
       },
       swapBuyTokens () {
         // send() from web3
-        this.loading = true
+        this.isLoading = true
 
         const converted = this.web3.utils.toWei(this.buyInput.toString(), 'ether')
         this.ethSwap.methods.buyTokens()
           .send({ value: converted, from: this.account })
           .on('transactionHash', () => {
-            this.loading = false
+            this.isLoading = false
             window.location.reload(true)
           })
 
       },
       swapSellTokens () {
-        this.loading = true
+        this.isLoading = true
         const converted = this.web3.utils.toWei(this.sellInput.toString(), 'ether')
-        const converted2 = this.web3.utils.fromWei(this.sellInput.toString(), 'ether')
-        console.log('CCCthis.ethSwap._address', this.ethSwap._address)
-        console.log('XXXconverted', converted)
-        console.log('XXXconverted2', converted2)
         this.token.methods.approve(this.ethSwap._address, converted).send({ from: this.account })
           .on('transactionHash', () => {
-              // this.ethSwap.methods.sellTokens(converted)
-              //   .send({ from: this.account })
-              //   .on('transactionHash', () => {
-              //   this.loading = false
-              //   window.location.reload(true)
-              // })
+              this.ethSwap.methods.sellTokens(converted)
+                .send({ from: this.account })
+                .on('transactionHash', () => {
+                this.isLoading = false
+                window.location.reload(true)
+              })
             },
           )
       },
